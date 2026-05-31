@@ -160,21 +160,18 @@ function comuns() {{
   return blocs(i2).filter(s=>s1.has(s));
 }}
 function placeSimbols(n,R) {{
-  const pos=[],minD=52,tries=600;
-  for(let s=0;s<n;s++) {{
-    let placed=false;
-    for(let t=0;t<tries;t++) {{
-      const a=Math.random()*Math.PI*2,d=24+Math.random()*(R-52);
-      const x=R+d*Math.cos(a),y=R+d*Math.sin(a);
-      if(Math.hypot(x-R,y-R)>R-28) continue;
-      if(pos.every(([px,py])=>Math.hypot(x-px,y-py)>=minD)) {{
-        pos.push([x,y]);placed=true;break;
-      }}
-    }}
-    if(!placed) {{
-      const a=(s/n)*Math.PI*2;
-      pos.push([R+(R-44)*Math.cos(a),R+(R-44)*Math.sin(a)]);
-    }}
+  const cols=3, r=R/3.8;
+  const step = (R*2 - r*2) / (cols-1);
+  const offset = r + 4;
+  const pos=[];
+  for(let i=0;i<9;i++) {{
+    const row=Math.floor(i/3), col=i%3;
+    const angle = (i/9)*Math.PI*2 + Math.random()*0.4 - 0.2;
+    const jx = (Math.random()-0.5)*8;
+    const jy = (Math.random()-0.5)*8;
+    const x = offset + col*step + jx;
+    const y = offset + row*step + jy;
+    pos.push([x,y]);
   }}
   return pos;
 }}
@@ -187,7 +184,7 @@ function drawCard(canvas,idx,highlight=[],dimRest=false) {{
   canvas.dataset.syms=JSON.stringify(syms);
   canvas.dataset.pos=JSON.stringify(pos);
   syms.forEach((symIdx,i) => {{
-    const [x,y]=pos[i],r=28;
+    const [x,y]=pos[i],r=Math.floor(R/3.8);
     const isHL=highlight.includes(symIdx);
     ctx.globalAlpha=(dimRest&&!isHL)?0.15:1;
     if(isHL) {{
