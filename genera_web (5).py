@@ -160,18 +160,17 @@ function comuns() {{
   return blocs(i2).filter(s=>s1.has(s));
 }}
 function placeSimbols(n,R) {{
-  const gap = R * 0.62;
-  const row = R * 0.62;
+  const s = R * 0.58;
   const pos = [
-    [R - gap, R - row],
-    [R,       R - row],
-    [R + gap, R - row],
-    [R - gap, R      ],
-    [R,       R      ],
-    [R + gap, R      ],
-    [R - gap, R + row],
-    [R,       R + row],
-    [R + gap, R + row],
+    [R - s,  R - s ],
+    [R,      R - s ],
+    [R + s,  R - s ],
+    [R - s,  R     ],
+    [R,      R     ],
+    [R + s,  R     ],
+    [R - s,  R + s ],
+    [R,      R + s ],
+    [R + s,  R + s ],
   ];
   return pos;
 }}
@@ -184,7 +183,7 @@ function drawCard(canvas,idx,highlight=[],dimRest=false) {{
   canvas.dataset.syms=JSON.stringify(syms);
   canvas.dataset.pos=JSON.stringify(pos);
   syms.forEach((symIdx,i) => {{
-    const [x,y]=pos[i],r=Math.floor(R/3.8);
+    const [x,y]=pos[i],r=Math.floor(R/4.2);
     const isHL=highlight.includes(symIdx);
     ctx.globalAlpha=(dimRest&&!isHL)?0.15:1;
     if(isHL) {{
