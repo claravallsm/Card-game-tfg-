@@ -160,19 +160,19 @@ function comuns() {{
   return blocs(i2).filter(s=>s1.has(s));
 }}
 function placeSimbols(n,R) {{
-  const cols=3, r=R/3.8;
-  const step = (R*2 - r*2) / (cols-1);
-  const offset = r + 4;
-  const pos=[];
-  for(let i=0;i<9;i++) {{
-    const row=Math.floor(i/3), col=i%3;
-    const angle = (i/9)*Math.PI*2 + Math.random()*0.4 - 0.2;
-    const jx = (Math.random()-0.5)*8;
-    const jy = (Math.random()-0.5)*8;
-    const x = offset + col*step + jx;
-    const y = offset + row*step + jy;
-    pos.push([x,y]);
-  }}
+  const gap = R * 0.62;
+  const row = R * 0.62;
+  const pos = [
+    [R - gap, R - row],
+    [R,       R - row],
+    [R + gap, R - row],
+    [R - gap, R      ],
+    [R,       R      ],
+    [R + gap, R      ],
+    [R - gap, R + row],
+    [R,       R + row],
+    [R + gap, R + row],
+  ];
   return pos;
 }}
 function drawCard(canvas,idx,highlight=[],dimRest=false) {{
