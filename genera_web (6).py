@@ -160,7 +160,7 @@ function comuns() {{
   return blocs(i2).filter(s=>s1.has(s));
 }}
 function placeSimbols(n,R) {{
-  const s = R * 0.58;
+  const s = R * 0.52;
   const pos = [
     [R - s,  R - s ],
     [R,      R - s ],
@@ -183,7 +183,7 @@ function drawCard(canvas,idx,highlight=[],dimRest=false) {{
   canvas.dataset.syms=JSON.stringify(syms);
   canvas.dataset.pos=JSON.stringify(pos);
   syms.forEach((symIdx,i) => {{
-    const [x,y]=pos[i],r=Math.floor(R/4.2);
+    const [x,y]=pos[i],r=Math.floor(R/5.0);
     const isHL=highlight.includes(symIdx);
     ctx.globalAlpha=(dimRest&&!isHL)?0.15:1;
     if(isHL) {{
