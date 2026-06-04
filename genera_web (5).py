@@ -31,7 +31,7 @@ ruta_arreu = directori_script
 arxius_arreu = sorted([f for f in os.listdir(ruta_arreu) if f.startswith("arreu") and f.endswith(".jpg")])
 seleccio_arreu = random.sample(arxius_arreu, 37 - 3 * len(carpetes))
 noms_fitxers += [os.path.join(ruta_arreu, f) for f in seleccio_arreu]
-print(len(noms_fitxers))
+
 # ── convertir fotos a base64 ────────────────────────────────────────────────
 
 def foto_a_base64(path, mida=(200, 200)):
@@ -160,7 +160,7 @@ function comuns() {{
   return blocs(i2).filter(s=>s1.has(s));
 }}
 function placeSimbols(n,R) {{
-  const s = R * 0.52;
+  const s = R * 0.58;
   const pos = [
     [R - s,  R - s ],
     [R,      R - s ],
@@ -183,7 +183,7 @@ function drawCard(canvas,idx,highlight=[],dimRest=false) {{
   canvas.dataset.syms=JSON.stringify(syms);
   canvas.dataset.pos=JSON.stringify(pos);
   syms.forEach((symIdx,i) => {{
-    const [x,y]=pos[i],r=Math.floor(R/5.0);
+    const [x,y]=pos[i],r=Math.floor(R/4.2);
     const isHL=highlight.includes(symIdx);
     ctx.globalAlpha=(dimRest&&!isHL)?0.15:1;
     if(isHL) {{
