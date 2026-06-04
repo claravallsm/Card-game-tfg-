@@ -110,7 +110,6 @@ html = f"""<!DOCTYPE html>
 </style>
 </head>
 <body>
-
 <header>
   <h1>Two simbols by Clara Valls.</h1>
   <span class="sub">Based on BIBD(37,9,2) </span>
