@@ -57,7 +57,7 @@ html = f"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dobble · BIBD(37,9,2)</title>
+<title> Find the two · BIBD(37,9,2)</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {{
@@ -149,7 +149,7 @@ function blocs(idx) {{
   return MATRIX[idx].map((v,i) => v===1?i:-1).filter(x=>x>=0);
 }}
 function placeSimbols(n,R) {{
-  const s = R * 0.58;
+  const s = R * 0.2;
   const pos = [
     [R - s,  R - s ],
     [R,      R - s ],
