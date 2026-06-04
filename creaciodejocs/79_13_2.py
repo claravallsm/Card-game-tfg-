@@ -60,7 +60,6 @@ def generate_bibd_79_13_2():
 matrix= generate_bibd_79_13_2()
 for i in range(79):
     print(matrix[i])
-'''
 resultat = np.dot(matrix, matrix.T)
 print("Coeficients de la matriu resultant")
 for i in range(79):
@@ -72,4 +71,3 @@ resultat_k = np.dot(v_vector, matrix)
 
 print("Coeficients del vector resultant")
 print(resultat_k)
-'''
