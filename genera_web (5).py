@@ -112,17 +112,13 @@ html = f"""<!DOCTYPE html>
 <body>
 
 <header>
-  <h1>dobble.</h1>
-  <span class="sub">BIBD(37,9,2) — λ=2</span>
+  <h1>Two simbols by Clara Valls.</h1>
+  <span class="sub">Based on BIBD(37,9,2) </span>
 </header>
 
 <div class="stats">
   <div class="stat">punts: <b id="s-score">0</b></div>
   <div class="stat">rondes: <b id="s-rounds">0</b></div>
-  <div class="stat">cartes: <b>37</b></div>
-  <div class="stat">símbols/carta: <b>9</b></div>
-  <div class="stat">comuns: <b>2</b></div>
-</div>
 
 <div id="game">
   <div class="cards-row">
@@ -136,12 +132,10 @@ html = f"""<!DOCTYPE html>
     </div>
   </div>
   <div class="result-box" id="result">
-    <div class="result-main">Troba els 2 símbols comuns</div>
-    <div class="result-sub">fes clic sobre un símbol de la carta esquerra</div>
+    <div class="result-sub">fes clic sobre un símbol de la carta esquerra i el mateix de la dreta</div>
   </div>
   <div class="btns">
     <button class="primary" onclick="novaRonda()">nova ronda →</button>
-    <button onclick="mostraPista()">pista</button>
   </div>
 </div>
 
@@ -154,10 +148,6 @@ const imgs = FOTOS.map(src => {{ const im=new Image(); im.src=src; return im; }}
 
 function blocs(idx) {{
   return MATRIX[idx].map((v,i) => v===1?i:-1).filter(x=>x>=0);
-}}
-function comuns() {{
-  const s1=new Set(blocs(i1));
-  return blocs(i2).filter(s=>s1.has(s));
 }}
 function placeSimbols(n,R) {{
   const s = R * 0.58;
@@ -217,13 +207,6 @@ function novaRonda() {{
   drawCard(document.getElementById('c1'),i1);
   drawCard(document.getElementById('c2'),i2);
   setResult('','Troba els 2 símbols comuns','fes clic sobre un símbol de la carta esquerra');
-}}
-function mostraPista() {{
-  pista=true;
-  const c=comuns();
-  drawCard(document.getElementById('c1'),i1,c,true);
-  drawCard(document.getElementById('c2'),i2,c,true);
-  setResult('','símbols comuns ressaltats',`índexs: ${{c.join(' i ')}}`);
 }}
 function handleClick(canvas,cardIdx,evt) {{
   if(pista) return;
