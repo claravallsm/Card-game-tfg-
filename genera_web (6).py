@@ -31,7 +31,7 @@ ruta_arreu = directori_script
 arxius_arreu = sorted([f for f in os.listdir(ruta_arreu) if f.startswith("arreu") and f.endswith(".jpg")])
 seleccio_arreu = random.sample(arxius_arreu, 37 - 3 * len(carpetes))
 noms_fitxers += [os.path.join(ruta_arreu, f) for f in seleccio_arreu]
-
+print(len(noms_fitxers))
 # ── convertir fotos a base64 ────────────────────────────────────────────────
 
 def foto_a_base64(path, mida=(200, 200)):

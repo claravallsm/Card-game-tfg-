@@ -51,7 +51,7 @@ ruta_arreu = os.path.join(directori_script, "FOTOS TFG")
 arxius_arreu = sorted([f for f in os.listdir(ruta_arreu) if f.startswith("arreu") and f.endswith(".jpg")])
 seleccio_arreu = random.sample(arxius_arreu, 37 - 3*len(carpetes))
 noms_fitxers += [os.path.join(ruta_arreu, f) for f in seleccio_arreu]
-
+print(noms_fitxers)
 def obtenir_imatges_del_bloc(bloc_idx, llista_fotos, matriu):
     # Busquem quins punts tenen un '1' en la fila del bloc escollit
     indices_punts = np.where(matriu[bloc_idx] == 1)[0]
