@@ -206,7 +206,7 @@ function novaRonda() {{
   document.getElementById('c2').classList.remove('active');
   drawCard(document.getElementById('c1'),i1);
   drawCard(document.getElementById('c2'),i2);
-  setResult('','Troba els 2 símbols comuns','fes clic sobre un símbol de la carta esquerra i el mateix a la dreta');
+  setResult('','Troba els 2 símbols comuns','fes clic sobre un símbol de la carta esquerra i el mateix de la dreta');
 }}
 function handleClick(canvas,cardIdx,evt) {{
   if(pista) return;
