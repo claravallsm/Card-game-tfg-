@@ -149,19 +149,16 @@ function blocs(idx) {{
   return MATRIX[idx].map((v,i) => v===1?i:-1).filter(x=>x>=0);
 }}
 function placeSimbols(n,R) {{
-  const s = R * 2;
-  const pos = [
-    [R - s,  R - s ],
-    
-    [R,      R - s ],
-    [R + s,  R - s ],
-    [R - s,  R     ],
-    [R,      R     ],
-    [R + s,  R     ],
-    [R - s,  R + s ],
-    [R,      R + s ],
-    [R + s,  R + s ],
-  ];
+  const r = R / 4.8;
+  const anell = R * 0.58;
+  const pos = [[R, R]];
+  for (let i = 0; i < 8; i++) {{
+    const angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
+    pos.push([
+      R + Math.cos(angle) * anell,
+      R + Math.sin(angle) * anell,
+    ]);
+  }}
   return pos;
 }}
 function drawCard(canvas,idx,highlight=[],dimRest=false) {{
