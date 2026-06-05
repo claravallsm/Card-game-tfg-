@@ -2,8 +2,6 @@ import numpy as np
 from PIL import Image
 import os, random, base64, json, io
 
-# ── el teu codi original ────────────────────────────────────────────────────
-
 def generate_bibd_37_9_2():
     v = 37
     base_block = [1, 7, 9, 10, 12, 16, 26, 33, 34]
@@ -16,7 +14,6 @@ def generate_bibd_37_9_2():
 
 matrix = generate_bibd_37_9_2()
 
-# les fotos estan a la mateixa carpeta que aquest script
 directori_script = os.path.dirname(os.path.abspath(__file__))
 noms_fitxers = []
 
@@ -32,8 +29,6 @@ arxius_arreu = sorted([f for f in os.listdir(ruta_arreu) if f.startswith("arreu"
 seleccio_arreu = random.sample(arxius_arreu, 37 - 3 * len(carpetes))
 noms_fitxers += [os.path.join(ruta_arreu, f) for f in seleccio_arreu]
 
-# ── convertir fotos a base64 ────────────────────────────────────────────────
-
 def foto_a_base64(path, mida=(200, 200)):
     img = Image.open(path).convert("RGB").resize(mida, Image.LANCZOS)
     buf = io.BytesIO()
@@ -47,8 +42,6 @@ for i, path in enumerate(noms_fitxers):
     fotos_b64.append(foto_a_base64(path))
     print(f"  {i+1}/37: {os.path.basename(path)}")
 
-# ── generar HTML ────────────────────────────────────────────────────────────
-
 matrix_json = json.dumps(matrix.tolist())
 fotos_json  = json.dumps(fotos_b64)
 
@@ -57,7 +50,7 @@ html = f"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title> Find the two · BIBD(37,9,2)</title>
+<title>Find the two · BIBD(37,9,2)</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {{
@@ -112,12 +105,13 @@ html = f"""<!DOCTYPE html>
 <body>
 <header>
   <h1>Two simbols by Clara Valls.</h1>
-  <span class="sub">Based on BIBD(37,9,2) </span>
+  <span class="sub">Based on BIBD(37,9,2)</span>
 </header>
 
 <div class="stats">
   <div class="stat">punts: <b id="s-score">0</b></div>
   <div class="stat">rondes: <b id="s-rounds">0</b></div>
+</div>
 
 <div id="game">
   <div class="cards-row">
@@ -142,14 +136,14 @@ html = f"""<!DOCTYPE html>
 const MATRIX = {matrix_json};
 const FOTOS  = {fotos_json};
 
-let i1=0, i2=1, seleccionat=null, pista=false, score=0, rounds=0;
+let i1=0, i2=1, seleccionat=null, score=0, rounds=0;
 const imgs = FOTOS.map(src => {{ const im=new Image(); im.src=src; return im; }});
 
 function blocs(idx) {{
   return MATRIX[idx].map((v,i) => v===1?i:-1).filter(x=>x>=0);
 }}
-function placeSimbols(n,R) {{
-  const r = R / 4.8;
+
+function placeSimbols(n, R) {{
   const anell = R * 0.58;
   const pos = [[R, R]];
   for (let i = 0; i < 8; i++) {{
@@ -161,81 +155,117 @@ function placeSimbols(n,R) {{
   }}
   return pos;
 }}
-function drawCard(canvas,idx,highlight=[],dimRest=false) {{
-  const ctx=canvas.getContext('2d'),W=canvas.width,R=W/2;
-  ctx.clearRect(0,0,W,W);
-  ctx.beginPath();ctx.arc(R,R,R-2,0,Math.PI*2);
-  ctx.fillStyle='#1a1a1c';ctx.fill();
-  const syms=blocs(idx),pos=placeSimbols(syms.length,R);
-  canvas.dataset.syms=JSON.stringify(syms);
-  canvas.dataset.pos=JSON.stringify(pos);
-  syms.forEach((symIdx,i) => {{
-    const [x,y]=pos[i],r=Math.floor(R/4.2);
-    const isHL=highlight.includes(symIdx);
-    ctx.globalAlpha=(dimRest&&!isHL)?0.15:1;
-    if(isHL) {{
-      ctx.beginPath();ctx.arc(x,y,r+4,0,Math.PI*2);
-      ctx.fillStyle='rgba(200,241,53,0.15)';ctx.fill();
-      ctx.strokeStyle='#c8f135';ctx.lineWidth=2;ctx.stroke();
-    }}
-    const im=imgs[symIdx];
-    const draw=()=>{{
-      ctx.save();ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.clip();
-      ctx.drawImage(im,x-r,y-r,r*2,r*2);ctx.restore();
-    }};
-    if(im.complete) draw();
-    else im.onload=()=>{{ctx.globalAlpha=(dimRest&&!isHL)?0.15:1;draw();ctx.globalAlpha=1;}};
+
+function drawCard(canvas, idx, highlight=[], dimRest=false) {{
+  const ctx = canvas.getContext('2d'), W = canvas.width, R = W / 2;
+  const syms = blocs(idx), pos = placeSimbols(syms.length, R);
+  canvas.dataset.syms = JSON.stringify(syms);
+  canvas.dataset.pos  = JSON.stringify(pos);
+
+  function renderTot() {{
+    ctx.clearRect(0, 0, W, W);
+    ctx.beginPath(); ctx.arc(R, R, R-2, 0, Math.PI*2);
+    ctx.fillStyle = '#1a1a1c'; ctx.fill();
+
+    syms.forEach((symIdx, i) => {{
+      const [x, y] = pos[i], r = Math.floor(R / 4.8);
+      const isHL = highlight.includes(symIdx);
+      ctx.globalAlpha = (dimRest && !isHL) ? 0.15 : 1;
+
+      if (isHL) {{
+        ctx.beginPath(); ctx.arc(x, y, r+4, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(200,241,53,0.15)'; ctx.fill();
+        ctx.strokeStyle = '#c8f135'; ctx.lineWidth = 2; ctx.stroke();
+      }}
+
+      const im = imgs[symIdx];
+      ctx.save();
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.clip();
+      if (im.complete && im.naturalWidth > 0) {{
+        ctx.drawImage(im, x-r, y-r, r*2, r*2);
+      }} else {{
+        ctx.fillStyle = '#333'; ctx.fill();
+      }}
+      ctx.restore();
+    }});
+
+    ctx.globalAlpha = 1;
+    ctx.beginPath(); ctx.arc(R, R, R-2, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1.5; ctx.stroke();
+  }}
+
+  const pendents = syms.map(s => imgs[s]).filter(im => !im.complete || im.naturalWidth === 0);
+  if (pendents.length === 0) {{ renderTot(); return; }}
+  let comptador = 0;
+  pendents.forEach(im => {{
+    im.onload  = () => {{ comptador++; if (comptador === pendents.length) renderTot(); }};
+    im.onerror = () => {{ comptador++; if (comptador === pendents.length) renderTot(); }};
   }});
-  ctx.globalAlpha=1;
-  ctx.beginPath();ctx.arc(R,R,R-2,0,Math.PI*2);
-  ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1.5;ctx.stroke();
 }}
-function setResult(cls,main,sub) {{
-  const box=document.getElementById('result');
-  box.className='result-box'+(cls?' '+cls:'');
-  box.innerHTML=`<div class="result-main">${{main}}</div><div class="result-sub">${{sub}}</div>`;
+
+function comuns() {{
+  const b1 = new Set(blocs(i1));
+  return blocs(i2).filter(x => b1.has(x));
 }}
+
+function setResult(cls, main, sub) {{
+  const box = document.getElementById('result');
+  box.className = 'result-box' + (cls ? ' ' + cls : '');
+  box.innerHTML = `<div class="result-main">${{main}}</div><div class="result-sub">${{sub}}</div>`;
+}}
+
 function novaRonda() {{
-  seleccionat=null;pista=false;
-  i1=Math.floor(Math.random()*37);
-  do{{i2=Math.floor(Math.random()*37);}}while(i2===i1);
+  seleccionat = null;
+  i1 = Math.floor(Math.random() * 37);
+  do {{ i2 = Math.floor(Math.random() * 37); }} while (i2 === i1);
   document.getElementById('c1').classList.remove('active');
   document.getElementById('c2').classList.remove('active');
-  drawCard(document.getElementById('c1'),i1);
-  drawCard(document.getElementById('c2'),i2);
-  setResult('','Troba els 2 símbols comuns','fes clic sobre un símbol de la carta esquerra i el mateix de la dreta');
+  drawCard(document.getElementById('c1'), i1);
+  drawCard(document.getElementById('c2'), i2);
+  setResult('', 'Troba els 2 símbols comuns', 'fes clic sobre un símbol de la carta esquerra i el mateix de la dreta');
 }}
-function handleClick(canvas,cardIdx,evt) {{
-  if(pista) return;
-  const rect=canvas.getBoundingClientRect();
-  const mx=(evt.clientX-rect.left)*(canvas.width/rect.width);
-  const my=(evt.clientY-rect.top)*(canvas.height/rect.height);
-  const syms=JSON.parse(canvas.dataset.syms||'[]');
-  const pos=JSON.parse(canvas.dataset.pos||'[]');
-  let clicked=null;
-  syms.forEach((s,i)=>{{if(Math.hypot(mx-pos[i][0],my-pos[i][1])<32) clicked=s;}});
-  if(clicked===null) return;
-  if(cardIdx===i1) {{
-    seleccionat=clicked;
+
+function handleClick(canvas, cardIdx, evt) {{
+  const rect = canvas.getBoundingClientRect();
+  const mx = (evt.clientX - rect.left) * (canvas.width / rect.width);
+  const my = (evt.clientY - rect.top)  * (canvas.height / rect.height);
+  const syms = JSON.parse(canvas.dataset.syms || '[]');
+  const pos  = JSON.parse(canvas.dataset.pos  || '[]');
+  let clicked = null;
+  syms.forEach((s, i) => {{
+    if (Math.hypot(mx - pos[i][0], my - pos[i][1]) < 32) clicked = s;
+  }});
+  if (clicked === null) return;
+
+  if (cardIdx === i1) {{
+    seleccionat = clicked;
     canvas.classList.add('active');
-    setResult('',`símbol seleccionat: #${{clicked}}`,'ara fes clic al mateix símbol a la carta dreta');
-  }} else if(cardIdx===i2&&seleccionat!==null) {{
-    const c=comuns();
-    const ok=c.includes(clicked)&&c.includes(seleccionat)&&clicked===seleccionat;
-    const ok2=c.includes(clicked)&&c.includes(seleccionat);
-    if(ok||ok2){{score++;document.getElementById('s-score').textContent=score;}}
-    rounds++;document.getElementById('s-rounds').textContent=rounds;
-    drawCard(document.getElementById('c1'),i1,c);
-    drawCard(document.getElementById('c2'),i2,c);
-    if(ok||ok2) setResult('ok','✓ correcte! +1 punt',`comuns: #${{c.join(' i #')}}`);
-    else setResult('err','✗ incorrecte',`eren: #${{c.join(' i #')}}`);
-    seleccionat=null;
-    setTimeout(novaRonda,2000);
+    setResult('', `símbol seleccionat: #${{clicked}}`, 'ara fes clic al mateix símbol a la carta dreta');
+  }} else if (cardIdx === i2 && seleccionat !== null) {{
+    const c = comuns();
+    const ok = c.includes(clicked) && c.includes(seleccionat) && clicked === seleccionat;
+    const ok2 = c.includes(clicked) && c.includes(seleccionat);
+    if (ok || ok2) {{ score++; document.getElementById('s-score').textContent = score; }}
+    rounds++; document.getElementById('s-rounds').textContent = rounds;
+    drawCard(document.getElementById('c1'), i1, c, true);
+    drawCard(document.getElementById('c2'), i2, c, true);
+    if (ok || ok2) setResult('ok', '✓ correcte! +1 punt', `comuns: #${{c.join(' i #')}}`);
+    else           setResult('err', '✗ incorrecte', `eren: #${{c.join(' i #')}}`);
+    seleccionat = null;
+    setTimeout(novaRonda, 2000);
   }}
 }}
-document.getElementById('c1').addEventListener('click',e=>handleClick(document.getElementById('c1'),i1,e));
-document.getElementById('c2').addEventListener('click',e=>handleClick(document.getElementById('c2'),i2,e));
-novaRonda();
+
+document.getElementById('c1').addEventListener('click', e => handleClick(document.getElementById('c1'), i1, e));
+document.getElementById('c2').addEventListener('click', e => handleClick(document.getElementById('c2'), i2, e));
+
+// Precarregar totes les imatges i després començar
+let carregades = 0;
+imgs.forEach(im => {{
+  const done = () => {{ carregades++; if (carregades === imgs.length) novaRonda(); }};
+  if (im.complete && im.naturalWidth > 0) done();
+  else {{ im.onload = done; im.onerror = done; }}
+}});
 </script>
 </body>
 </html>"""
@@ -247,4 +277,3 @@ with open(output_path, "w", encoding="utf-8") as f:
 size_mb = os.path.getsize(output_path) / 1024 / 1024
 print(f"\nFet! dobble.html generat ({size_mb:.1f} MB)")
 print(f"Ubicació: {output_path}")
-print("\nAra puja dobble.html al GitHub i activa Pages.")
