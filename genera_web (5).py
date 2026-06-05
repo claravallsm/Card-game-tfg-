@@ -149,9 +149,10 @@ function blocs(idx) {{
   return MATRIX[idx].map((v,i) => v===1?i:-1).filter(x=>x>=0);
 }}
 function placeSimbols(n,R) {{
-  const s = R * 6;
+  const s = R * 2;
   const pos = [
     [R - s,  R - s ],
+    
     [R,      R - s ],
     [R + s,  R - s ],
     [R - s,  R     ],
