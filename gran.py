@@ -266,7 +266,6 @@ function posicions(R) {
   return p;
 }
 
-
 function draw(cv, idx, hl, dm, sel) {
   hl  = hl  || [];
   dm  = dm  || [];
