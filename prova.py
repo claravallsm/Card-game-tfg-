@@ -104,7 +104,7 @@ button.hid { display:none !important; }
 </head>
 <body>
 <header>
-  <h1>Find the &middot; two</h1>
+  <h1>Find the  two</h1>
   <div class="sub">BIBD(37,9,2) &middot; 2 minuts</div>
 </header>
 <div class="stats">
