@@ -100,7 +100,6 @@ button.hid { display:none !important; }
   align-items:center; justify-content:center; gap:12px; z-index:10; padding:2rem; }
 #overlay .big { font-size:1.8rem; font-weight:700; color:var(--acc); }
 #overlay .osub { font-size:0.9rem; color:var(--mut); text-align:center; line-height:1.8; }
-/* Pantalla inicial */
 #pantalla-ini {
   position:fixed; inset:0; background:var(--bg);
   display:flex; align-items:center; justify-content:center;
@@ -119,25 +118,10 @@ button.hid { display:none !important; }
   padding-left:1rem; border-left:2px solid var(--bor); line-height:1.5;
 }
 .ini-box ul li b { color:var(--txt); }
-.ini-box #b-comencar { width:100%; padding:16px; font-size:1rem; margin-top:0.5rem; }
+#b-comencar { width:100%; padding:16px; font-size:1rem; margin-top:0.5rem; }
 </style>
 </head>
 <body>
-<div id="pantalla-ini">   ← AQUÍ, el primer element del body
-  <div class="ini-box">
-  </div>
-</div>
-<header>
-  <h1>Find the two</h1>
-  <div class="sub">BIBD(37,9,2) &middot; 2 minuts</div>
-</header>
-<div class="stats">
-  <div class="stat">punts: <b id="sc">0</b></div>
-  <div class="stat">rondes: <b id="sr">0</b></div>
-  <div class="stat">temps: <b id="st">2:00</b></div>
-</div>
-<div id="tbar-wrap"><div id="tbar" style="width:100%"></div></div>
-
 <div id="pantalla-ini">
   <div class="ini-box">
     <h2>Com es juga</h2>
@@ -150,10 +134,19 @@ button.hid { display:none !important; }
       <li>O trobar els <b>2 símbols (+2 pts)</b> per màxima puntuació</li>
       <li>Si no veus res, prem <b>Salta (0 pts)</b></li>
     </ul>
-    <button class="acc" id="b-comencar">Clica per començar</button>
+    <button class="acc" id="b-comencar" onclick="document.getElementById('pantalla-ini').style.display='none'; ini();">Clica per començar</button>
   </div>
 </div>
-
+<header>
+  <h1>Find the two</h1>
+  <div class="sub">BIBD(37,9,2) &middot; 2 minuts</div>
+</header>
+<div class="stats">
+  <div class="stat">punts: <b id="sc">0</b></div>
+  <div class="stat">rondes: <b id="sr">0</b></div>
+  <div class="stat">temps: <b id="st">2:00</b></div>
+</div>
+<div id="tbar-wrap"><div id="tbar" style="width:100%"></div></div>
 <div id="game">
   <div class="row">
     <div class="cwrap">
@@ -216,9 +209,6 @@ function posicions(R) {
   return p;
 }
 
-// hl  = simbols encertats (verd)
-// dm  = simbols apagats
-// sel = simbol seleccionat a l esquerra (taronja, -1 = cap)
 function draw(cv, idx, hl, dm, sel) {
   hl  = hl  || [];
   dm  = dm  || [];
@@ -238,26 +228,22 @@ function draw(cv, idx, hl, dm, sel) {
       var d     = dm.indexOf(s) >= 0;
       var isSel = (s === sel);
       ctx.globalAlpha = d ? 0.12 : 1;
-      // Halo taronja si seleccionat
       if (isSel) {
         ctx.beginPath(); ctx.arc(x,y,r+6,0,Math.PI*2);
         ctx.fillStyle = 'rgba(239,159,39,0.25)'; ctx.fill();
         ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 2.5; ctx.stroke();
       }
-      // Halo verd si encertat
       if (h) {
         ctx.beginPath(); ctx.arc(x,y,r+6,0,Math.PI*2);
         ctx.fillStyle = 'rgba(29,158,117,0.22)'; ctx.fill();
         ctx.strokeStyle = '#1D9E75'; ctx.lineWidth = 2.5; ctx.stroke();
       }
-      // Imatge
       var im = imgs[s];
       ctx.save();
       ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.clip();
       if (im.complete && im.naturalWidth) ctx.drawImage(im, x-r, y-r, r*2, r*2);
       else { ctx.fillStyle = '#333'; ctx.fill(); }
       ctx.restore();
-      // Borde interior
       if (isSel) {
         ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.stroke();
@@ -362,7 +348,6 @@ function clic(cv, esq, e) {
     }
     G.selEsq = cl;
     if (G.estat === 'idle') G.estat = 'espera';
-    // Ressalta NOMES el simbol clicat en taronja
     if (G.estat === 'un') {
       draw(c1, G.i1, [G.prim], [], cl);
     } else {
@@ -374,12 +359,10 @@ function clic(cv, esq, e) {
     return;
   }
 
-  // Carta dreta
   if (G.selEsq === null) return;
   if (c.indexOf(cl) < 0 || cl !== G.selEsq) {
     setRes('err', 'Incorrecte',
       G.estat === 'un' ? 'torna a intentar o prem Passa' : 'no coincideixen, torna-ho a intentar');
-    // Treu el ressaltat taronja
     if (G.estat === 'un') draw(c1, G.i1, [G.prim], []);
     else draw(c1, G.i1);
     G.selEsq = null;
@@ -439,10 +422,6 @@ function btn(id, fn) {
   });
   el.addEventListener('click', function() { if (!lk) fn(); });
 }
-btn('b-comencar', function() {
-  document.getElementById('pantalla-ini').style.display = 'none';
-  ini();
-});
 btn('b-ini', ini);
 btn('b-pas', passa);
 btn('b-sal', salta);
