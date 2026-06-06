@@ -178,7 +178,6 @@ button.hid { display:none !important; }
       <li>O trobar els <b>2 símbols (+2 pts)</b> per màxima puntuació</li>
       <li>Si no veus res, prem <b>Salta (0 pts)</b></li>
     </ul>
-    <button class="acc" id="b-comencar">Clica per començar</button>
   </div>
 </div>
 <div id="game">
