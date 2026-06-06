@@ -157,7 +157,7 @@ button.hid { display:none !important; }
 <body>
 <div id="bonus">+5 seg!</div>
 <header>
-  <h1>Dobble Gran &middot; Contrarellotge</h1>
+  <h1>Find the two &middot; (difficult version)</h1>
   <div class="sub">BIBD(56,11,2) &middot; 2 minuts</div>
 </header>
 <div class="stats">
