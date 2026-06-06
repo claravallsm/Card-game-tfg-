@@ -50,7 +50,7 @@ page = '''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Find the two </title>
+<title>Find the two</title>
 <style>
 :root {
   --bg:#0e0e0f; --sur:#1a1a1c; --sur2:#242426;
@@ -62,7 +62,7 @@ body { background:var(--bg); color:var(--txt); font-family:sans-serif;
   min-height:100vh; display:flex; flex-direction:column; align-items:center; }
 header { width:100%; max-width:900px; padding:1.5rem 1.5rem 0.5rem; }
 h1 { font-size:1.4rem; color:var(--acc); }
-.sub { font-size:0.4rem; color:var(--mut); margin-top:4px; }
+.sub { font-size:0.75rem; color:var(--mut); margin-top:4px; }
 .stats { display:flex; gap:10px; padding:0.75rem 1.5rem; width:100%; max-width:900px; flex-wrap:wrap; }
 .stat { background:var(--sur); border:1px solid var(--bor); border-radius:8px;
   padding:8px 16px; font-size:0.78rem; color:var(--mut); }
@@ -100,11 +100,31 @@ button.hid { display:none !important; }
   align-items:center; justify-content:center; gap:12px; z-index:10; padding:2rem; }
 #overlay .big { font-size:1.8rem; font-weight:700; color:var(--acc); }
 #overlay .osub { font-size:0.9rem; color:var(--mut); text-align:center; line-height:1.8; }
+/* Pantalla inicial */
+#pantalla-ini {
+  position:fixed; inset:0; background:var(--bg);
+  display:flex; align-items:center; justify-content:center;
+  z-index:200; padding:1.5rem;
+}
+.ini-box {
+  background:var(--sur); border:1px solid var(--bor);
+  border-radius:16px; padding:2rem; max-width:460px;
+  width:100%; display:flex; flex-direction:column; gap:1rem;
+}
+.ini-box h2 { color:var(--acc); font-size:1.4rem; text-align:center; }
+.ini-sub { font-size:0.75rem; color:var(--mut); text-align:center; }
+.ini-box ul { list-style:none; display:flex; flex-direction:column; gap:0.6rem; }
+.ini-box ul li {
+  font-size:0.78rem; color:var(--mut);
+  padding-left:1rem; border-left:2px solid var(--bor); line-height:1.5;
+}
+.ini-box ul li b { color:var(--txt); }
+.ini-box #b-comencar { width:100%; padding:16px; font-size:1rem; margin-top:0.5rem; }
 </style>
 </head>
 <body>
 <header>
-  <h1>Find the  two</h1>
+  <h1>Find the two</h1>
   <div class="sub">BIBD(37,9,2) &middot; 2 minuts</div>
 </header>
 <div class="stats">
@@ -113,10 +133,11 @@ button.hid { display:none !important; }
   <div class="stat">temps: <b id="st">2:00</b></div>
 </div>
 <div id="tbar-wrap"><div id="tbar" style="width:100%"></div></div>
+
 <div id="pantalla-ini">
   <div class="ini-box">
     <h2>Com es juga</h2>
-    <p class="ini-sub">BIBD(56,11,2) &middot; versió difícil</p>
+    <p class="ini-sub">BIBD(37,9,2) &middot; 2 minuts</p>
     <ul>
       <li>Tens <b>2 minuts</b> per trobar el màxim de símbols</li>
       <li>En cada parell de cartes hi ha <b>exactament 2 símbols en comú</b></li>
@@ -124,11 +145,11 @@ button.hid { display:none !important; }
       <li>Pots trobar <b>1 símbol (+1 pt)</b> i prémer Passa</li>
       <li>O trobar els <b>2 símbols (+2 pts)</b> per màxima puntuació</li>
       <li>Si no veus res, prem <b>Salta (0 pts)</b></li>
-      <li>Ratxa de 3 rondes completes &rarr; <b>+5 segons!</b></li>
     </ul>
     <button class="acc" id="b-comencar">Clica per començar</button>
   </div>
 </div>
+
 <div id="game">
   <div class="row">
     <div class="cwrap">
@@ -143,7 +164,7 @@ button.hid { display:none !important; }
   <div class="hint">1 simbol comu &rarr; +1 pt &nbsp;&middot;&nbsp; tots 2 &rarr; +2 pts</div>
   <div class="rbox" id="res"><div class="rsub">Prem Inicia per comenar</div></div>
   <div class="btns">
-    <button class="acc" id="b-ini">Inicia</button>
+    <button class="acc hid" id="b-ini">Inicia</button>
     <button id="b-pas" class="acc hid">Passa (+1 pt)</button>
     <button id="b-sal" class="hid">Salta (0 pts)</button>
   </div>
@@ -191,6 +212,9 @@ function posicions(R) {
   return p;
 }
 
+// hl  = simbols encertats (verd)
+// dm  = simbols apagats
+// sel = simbol seleccionat a l esquerra (taronja, -1 = cap)
 function draw(cv, idx, hl, dm, sel) {
   hl  = hl  || [];
   dm  = dm  || [];
@@ -206,31 +230,36 @@ function draw(cv, idx, hl, dm, sel) {
     ctx.fillStyle = '#1a1a1c'; ctx.fill();
     sy.forEach(function(s, i) {
       var x = ps[i][0], y = ps[i][1], r = r0;
-      var h  = hl.indexOf(s) >= 0;
-      var d  = dm.indexOf(s) >= 0;
+      var h     = hl.indexOf(s) >= 0;
+      var d     = dm.indexOf(s) >= 0;
       var isSel = (s === sel);
       ctx.globalAlpha = d ? 0.12 : 1;
-      if (h) {
-        ctx.beginPath(); ctx.arc(x,y,r+6,0,Math.PI*2);
-        ctx.fillStyle = 'rgba(29,158,117,0.22)'; ctx.fill();
-        ctx.strokeStyle = '#1D9E75'; ctx.lineWidth = 2.5; ctx.stroke();
-      } else if (isSel) {
+      // Halo taronja si seleccionat
+      if (isSel) {
         ctx.beginPath(); ctx.arc(x,y,r+6,0,Math.PI*2);
         ctx.fillStyle = 'rgba(239,159,39,0.25)'; ctx.fill();
         ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 2.5; ctx.stroke();
       }
-
+      // Halo verd si encertat
+      if (h) {
+        ctx.beginPath(); ctx.arc(x,y,r+6,0,Math.PI*2);
+        ctx.fillStyle = 'rgba(29,158,117,0.22)'; ctx.fill();
+        ctx.strokeStyle = '#1D9E75'; ctx.lineWidth = 2.5; ctx.stroke();
+      }
+      // Imatge
       var im = imgs[s];
       ctx.save();
       ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.clip();
       if (im.complete && im.naturalWidth) ctx.drawImage(im, x-r, y-r, r*2, r*2);
       else { ctx.fillStyle = '#333'; ctx.fill(); }
-      ctx.restore();  
+      ctx.restore();
+      // Borde interior
+      if (isSel) {
+        ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.stroke();
+      }
       if (h) {
         ctx.strokeStyle = '#1D9E75'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.stroke();
-      } else if (isSel) {
-        ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.stroke();
       }
     });
@@ -329,6 +358,7 @@ function clic(cv, esq, e) {
     }
     G.selEsq = cl;
     if (G.estat === 'idle') G.estat = 'espera';
+    // Ressalta NOMES el simbol clicat en taronja
     if (G.estat === 'un') {
       draw(c1, G.i1, [G.prim], [], cl);
     } else {
@@ -340,10 +370,12 @@ function clic(cv, esq, e) {
     return;
   }
 
+  // Carta dreta
   if (G.selEsq === null) return;
   if (c.indexOf(cl) < 0 || cl !== G.selEsq) {
     setRes('err', 'Incorrecte',
       G.estat === 'un' ? 'torna a intentar o prem Passa' : 'no coincideixen, torna-ho a intentar');
+    // Treu el ressaltat taronja
     if (G.estat === 'un') draw(c1, G.i1, [G.prim], []);
     else draw(c1, G.i1);
     G.selEsq = null;
@@ -388,7 +420,7 @@ function ini() {
   G.timer = setInterval(tick, 1000);
   nova();
 }
-function rei() { hid('b-ini', false); ini(); }
+function rei() { ini(); }
 
 var c1 = document.getElementById('c1');
 var c2 = document.getElementById('c2');
@@ -403,6 +435,10 @@ function btn(id, fn) {
   });
   el.addEventListener('click', function() { if (!lk) fn(); });
 }
+btn('b-comencar', function() {
+  document.getElementById('pantalla-ini').style.display = 'none';
+  ini();
+});
 btn('b-ini', ini);
 btn('b-pas', passa);
 btn('b-sal', salta);
@@ -438,5 +474,5 @@ with open(output_path, "w", encoding="utf-8") as f:
     f.write(page)
 
 size_mb = os.path.getsize(output_path) / 1024 / 1024
-print(f"\nFet! dobble_time_attack.html generat ({size_mb:.1f} MB)")
+print(f"\nFet! dobble_time_attack_prova.html generat ({size_mb:.1f} MB)")
 print(f"Ubicacio: {output_path}")
