@@ -181,7 +181,20 @@ button.hid { display:none !important; }
     <button class="acc" id="b-comencar">Clica per començar</button>
   </div>
 </div>
+<div id="pantalla-ini">
+  <div class="ini-box">
+    <h2>Com es juga</h2>
+    <ul>
+      <li>Tens <b>2 minuts</b> per trobar el màxim de símbols</li>
+      <li>En cada parell de cartes hi ha <b>exactament 2 símbols en comú</b></li>
+      <li>Pots trobar <b>1 símbol (+1 pt)</b> i prémer Passa</li>
+      <li>O trobar els <b>2 símbols (+2 pts)</b> per màxima puntuació</li>
+      <li>Si no veus res, prem <b>Salta (0 pts)</b></li>
+    </ul>
+  </div>
+</div>
 <div id="game">
+
   <div class="row">
     <div class="cwrap">
       <div class="clabel">carta 1</div>
