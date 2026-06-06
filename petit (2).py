@@ -185,7 +185,8 @@ var G = {
   score:0, rounds:0,
   secs:120,
   timer:null,
-  run:false
+  run:false,
+  best: parseInt(localStorage.getItem('best37') || '0')
 };
 
 var imgs = FOTOS.map(function(s) {
@@ -294,10 +295,11 @@ function tick() {
   var b = document.getElementById('tbar');
   b.style.width = p + '%';
   b.style.background = p > 50 ? '#1D9E75' : p > 20 ? '#EF9F27' : '#E24B4A';
-}function fi() {
+}
+function fi() {
   if (G.score > G.best) {
     G.best = G.score;
-    localStorage.setItem('best56', G.score);
+    localStorage.setItem('best37', G.score);
   }
   document.getElementById('ov-sub').innerHTML =
     'Has aconseguit <b style="color:#f0efe8">' + G.score + ' punts</b> en ' + G.rounds + ' rondes' +
