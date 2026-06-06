@@ -123,7 +123,6 @@ button.hid { display:none !important; }
 </style>
 </head>
 <body>
-<body>
 <div id="pantalla-ini">   ← AQUÍ, el primer element del body
   <div class="ini-box">
   </div>
