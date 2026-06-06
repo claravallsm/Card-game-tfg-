@@ -171,7 +171,7 @@ button.hid { display:none !important; }
     </div>
   </div>
   <div class="hint">1 simbol comu &rarr; +1 pt &nbsp;&middot;&nbsp; tots 2 &rarr; +2 pts &nbsp;&middot;&nbsp; ratxa x3 &rarr; +5 seg!</div>
-  <div class="rbox" id="res"><div class="rsub">Prem Inicia per comenar</div></div>
+  <div class="rbox" id="res"><div class="rsub">Prem Inicia per començar</div></div>
   <div class="btns">
     <button class="acc" id="b-ini">Inicia</button>
     <button id="b-pas" class="acc hid">Passa (+1 pt)</button>

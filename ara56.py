@@ -179,7 +179,7 @@ button.hid { display:none !important; }
     </div>
   </div>
   <div class="hint">1 simbol comu &rarr; +1 pt &nbsp;&middot;&nbsp; tots 2 &rarr; +2 pts &nbsp;&middot;&nbsp; ratxa x3 &rarr; +5 seg!</div>
-  <div class="rbox" id="res"><div class="rsub">Prem Inicia per comenar</div></div>
+  <div class="rbox" id="res"><div class="rsub">Prem Inicia per començar</div></div>
   <div class="btns">
     <button class="acc" id="b-ini">Inicia</button>
     <button id="b-pas" class="acc hid">Passa (+1 pt)</button>
@@ -222,9 +222,8 @@ function comuns(a, b) {
   var s = new Set(blocs(a));
   return blocs(b).filter(function(x) { return s.has(x); });
 }
-// 1 centre + 10 en anell per als 11 simbols per carta
 function posicions(R) {
-  var p = [[R,R]], an = R * 0.62;
+  var p = [[R,R]], an = R * 0.8;
   for (var i = 0; i < 10; i++) {
     var a = i / 10 * Math.PI * 2 - Math.PI / 2;
     p.push([R + Math.cos(a) * an, R + Math.sin(a) * an]);
@@ -292,7 +291,6 @@ function getXY(e, cv) {
   return [(e.clientX - r.left) * sx, (e.clientY - r.top) * sy];
 }
 
-// So sintetitzat amb Web Audio
 var actx = null;
 function so(freq, dur, type) {
   try {
@@ -384,10 +382,8 @@ function salta() {
 function sumaPunts(n) {
   G.score += n;
   document.getElementById('sc').textContent = G.score;
-  // Ratxa
   G.streak += 1;
   updateStreak();
-  // Bonus temps cada 3 encerts seguits
   if (G.streak > 0 && G.streak % 3 === 0) {
     G.secs = Math.min(G.secs + 5, TSECS);
     showBonus('+5 seg! Ratxa ' + G.streak + '!');
