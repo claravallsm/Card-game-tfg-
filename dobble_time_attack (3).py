@@ -87,7 +87,7 @@ html = f"""<!DOCTYPE html>
   .card {{ border-radius: 50%; border: 1.5px solid var(--border); cursor: pointer;
     transition: border-color 0.2s, transform 0.15s; background: var(--surface); display: block; }}
   .card:hover {{ transform: scale(1.02); border-color: rgba(255,255,255,0.2); }}
-  .card.active {{ border-color: var(--accent); border-width: 2.5px; }}
+  .card.sel {{ border-color: var(--warn); border-width: 2.5px; }}
   .result-box {{ background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 1.25rem 1.5rem; text-align: center;
     margin-bottom: 1rem; min-height: 80px; display: flex; flex-direction: column;
@@ -110,7 +110,7 @@ html = f"""<!DOCTYPE html>
   button.primary {{ background: var(--accent); color: #0e0e0f;
     border-color: var(--accent); font-weight: 700; }}
   button.primary:hover {{ opacity: 0.88; }}
-  button:disabled {{ opacity: 0.3; cursor: default; pointer-events: none; }}
+  button.hidden {{ display: none !important; }}
   #overlay {{ position: absolute; inset: 0;
     background: rgba(14,14,15,0.92); border-radius: var(--radius);
     display: none; flex-direction: column; align-items: center;
@@ -150,7 +150,7 @@ html = f"""<!DOCTYPE html>
   </div>
 
   <div class="hint-strip">
-    troba 1 símbol comú → +1 pt i passa &nbsp;·&nbsp; troba els 2 → +2 pts i passa
+    troba 1 símbol comú → +1 pt · pots seguir buscant el 2n → +2 pts en total
   </div>
 
   <div class="result-box" id="result">
@@ -159,8 +159,8 @@ html = f"""<!DOCTYPE html>
 
   <div class="btns">
     <button class="primary" id="btn-start" onclick="iniciar()">Inicia ▶</button>
-    <button id="btn-passa" onclick="passaAmbUn()" style="display:none" disabled>passa (+1 pt) →</button>
-    <button id="btn-skip"  onclick="saltaRonda()" style="display:none">salta (0 pts) →</button>
+    <button id="btn-passa" class="primary hidden" onclick="passaAmbUn()">passa (+1 pt) →</button>
+    <button id="btn-skip"  class="hidden" onclick="saltaRonda()">salta (0 pts) →</button>
   </div>
 
   <div id="overlay">
@@ -175,7 +175,15 @@ const MATRIX = {matrix_json};
 const FOTOS  = {fotos_json};
 const TOTAL_SECS = 120;
 
-let i1=0, i2=1, selEsq=null, primerTrobat=null;
+// Estats de la ronda
+// 'idle'   → esperant que cliqui la carta esquerra
+// 'espera' → ha clicat esquerra, esperant que cliqui la mateixa a la dreta
+// 'un'     → ha verificat 1 símbol correctament, pot buscar el 2n o passar
+
+let i1=0, i2=1;
+let estat='idle';   // 'idle' | 'espera' | 'un'
+let selEsq=null;    // símbol seleccionat a la carta esquerra
+let primerTrobat=null; // índex del primer símbol verificat
 let score=0, rounds=0;
 let secsLeft=TOTAL_SECS, timerInterval=null, running=false;
 
@@ -232,13 +240,18 @@ function drawCard(canvas, idx, highlight=[], dim=[]) {{
   }}
   const pend = syms.map(s=>imgs[s]).filter(im=>!im.complete||im.naturalWidth===0);
   if (!pend.length) {{ render(); return; }}
-  let n=0; pend.forEach(im=>{{ im.onload=im.onerror=()=>{{n++;if(n===pend.length)render();}};  }});
+  let n=0; pend.forEach(im=>{{ im.onload=im.onerror=()=>{{n++;if(n===pend.length)render();}}; }});
 }}
+
 function setResult(cls, main, sub) {{
   const b=document.getElementById('result');
   b.className='result-box'+(cls?' '+cls:'');
   b.innerHTML=`<div class="result-main">${{main}}</div><div class="result-sub">${{sub}}</div>`;
 }}
+function showBtn(id, show) {{
+  document.getElementById(id).classList.toggle('hidden', !show);
+}}
+
 function updateTimer() {{
   secsLeft--;
   if (secsLeft<=0) {{
@@ -256,36 +269,34 @@ function gameOver() {{
   document.getElementById('overlay-sub').innerHTML =
     `Has aconseguit <b style="color:#f0efe8">${{score}} punts</b> en ${{rounds}} rondes`;
   document.getElementById('overlay').style.display='flex';
-  document.getElementById('btn-passa').style.display='none';
-  document.getElementById('btn-skip').style.display='none';
+  showBtn('btn-passa', false); showBtn('btn-skip', false);
 }}
+
 function novaRonda() {{
   if (!running) return;
-  selEsq=null; primerTrobat=null;
+  estat='idle'; selEsq=null; primerTrobat=null;
   i1=Math.floor(Math.random()*37);
   do {{ i2=Math.floor(Math.random()*37); }} while (i2===i1);
-  document.getElementById('c1').classList.remove('active');
-  document.getElementById('c2').classList.remove('active');
-  document.getElementById('btn-passa').style.display='none';
-  document.getElementById('btn-passa').disabled=true;
-  document.getElementById('btn-skip').style.display='inline-block';
+  document.getElementById('c1').classList.remove('sel');
+  document.getElementById('c2').classList.remove('sel');
+  showBtn('btn-passa', false);
+  showBtn('btn-skip', true);
   drawCard(document.getElementById('c1'), i1);
   drawCard(document.getElementById('c2'), i2);
   setResult('', 'Troba els símbols comuns',
-    'clica un símbol de la carta esquerra i el mateix a la dreta');
+    'clica un símbol de la carta esquerra · després el mateix a la dreta');
 }}
 
-// Passa amb 1 punt ja assegurat
+// Passa amb 1 punt ja verificat
 function passaAmbUn() {{
-  if (!running) return;
+  if (!running || estat!=='un') return;
   rounds++; document.getElementById('s-rounds').textContent=rounds;
   setResult('ok1', '+1 pt · has passat', 'bona decisió si el temps escasseja!');
-  document.getElementById('btn-passa').style.display='none';
-  document.getElementById('btn-skip').style.display='none';
+  showBtn('btn-passa', false); showBtn('btn-skip', false);
   setTimeout(novaRonda, 1200);
 }}
 
-// Salta sense punt
+// Salta la ronda sense punt
 function saltaRonda() {{
   if (!running) return;
   rounds++; document.getElementById('s-rounds').textContent=rounds;
@@ -293,13 +304,13 @@ function saltaRonda() {{
   drawCard(document.getElementById('c1'), i1, c, []);
   drawCard(document.getElementById('c2'), i2, c, []);
   setResult('err', '0 pts · has saltat', `Eren: #${{c.join(' i #')}}`);
-  document.getElementById('btn-passa').style.display='none';
-  document.getElementById('btn-skip').style.display='none';
+  showBtn('btn-passa', false); showBtn('btn-skip', false);
   setTimeout(novaRonda, 1500);
 }}
 
 function handleClick(canvas, cardIdx, evt) {{
   if (!running) return;
+
   const rect=canvas.getBoundingClientRect();
   const mx=(evt.clientX-rect.left)*(canvas.width/rect.width);
   const my=(evt.clientY-rect.top)*(canvas.height/rect.height);
@@ -312,87 +323,94 @@ function handleClick(canvas, cardIdx, evt) {{
   const c=comuns(i1,i2);
   const c1el=document.getElementById('c1'), c2el=document.getElementById('c2');
 
-  if (primerTrobat===null) {{
-    // ── Fase 1: busca el primer símbol ──
-    if (cardIdx===i1) {{
-      selEsq=clicked;
-      c1el.classList.add('active');
-      setResult('', `Símbol seleccionat: #${{clicked}}`,
-        'ara fes clic al MATEIX símbol a la carta dreta');
-    }} else if (cardIdx===i2 && selEsq!==null) {{
-      c1el.classList.remove('active');
-      if (c.includes(clicked) && clicked===selEsq) {{
-        // Primer encert → +1 pt, activa "passa" i continua buscant el segon
-        primerTrobat=clicked;
-        score++; document.getElementById('s-score').textContent=score;
-        drawCard(c1el, i1, [primerTrobat], []);
-        drawCard(c2el, i2, [primerTrobat], []);
-        setResult('ok1', `✓ +1 pt! Símbol #${{clicked}} trobat`,
-          'busca el 2n símbol per +1 pt més · o prem "passa (+1 pt)" per continuar');
-        document.getElementById('btn-passa').style.display='inline-block';
-        document.getElementById('btn-passa').disabled=false;
-        document.getElementById('btn-skip').style.display='none';
-        selEsq=null;
-      }} else {{
-        setResult('err', '✗ Incorrecte',
-          `#${{clicked}} i #${{selEsq}} no coincideixen · torna-ho a intentar`);
-        selEsq=null;
-      }}
+  // ── Selecció de la carta esquerra (sempre disponible per (re)seleccionar) ──
+  if (cardIdx===i1) {{
+    // En fase 'un', no pot tornar a seleccionar el ja trobat per la esquerra
+    if (estat==='un' && clicked===primerTrobat) {{
+      setResult('ok1', 'Ja has trobat aquest!',
+        'busca el SEGON símbol comú · o prem "passa (+1 pt)"');
+      return;
+    }}
+    selEsq=clicked;
+    if (estat==='idle') estat='espera';
+    // Si ja tenia un trobat, seguim en 'un' però actualitzem selecció
+    c1el.classList.add('sel');
+    const sub = estat==='un'
+      ? 'ara clica el MATEIX a la carta dreta per verificar el 2n'
+      : 'ara clica el MATEIX símbol a la carta dreta';
+    setResult(estat==='un'?'ok1':'', `Símbol seleccionat: #${{clicked}}`, sub);
+    return;
+  }}
+
+  // ── Verificació a la carta dreta ──
+  if (cardIdx===i2 && selEsq!==null) {{
+    c1el.classList.remove('sel');
+
+    if (!c.includes(clicked) || clicked!==selEsq) {{
+      // Error de verificació
+      const sub = estat==='un'
+        ? 'torna a intentar el 2n · o prem "passa (+1 pt)"'
+        : 'no coincideixen · torna-ho a intentar';
+      setResult('err', '✗ Incorrecte', sub);
+      selEsq=null;
+      return;
     }}
 
-  }} else {{
-    // ── Fase 2: busca el segon símbol ──
-    if (cardIdx===i1) {{
+    if (estat==='idle' || estat==='espera') {{
+      // ── Primer símbol verificat correctament ──
+      primerTrobat=clicked;
+      estat='un';
+      score++; document.getElementById('s-score').textContent=score;
+      drawCard(c1el, i1, [primerTrobat], []);
+      drawCard(c2el, i2, [primerTrobat], []);
+      setResult('ok1', `✓ +1 pt! Símbol #${{clicked}} verificat`,
+        'clica un altre símbol a l\'esquerra per buscar el 2n · o prem "passa (+1 pt)"');
+      showBtn('btn-passa', true);
+      showBtn('btn-skip', false);
+      selEsq=null;
+
+    }} else if (estat==='un') {{
+      // ── Segon símbol verificat: +2 pts en total, tanca la ronda ──
       if (clicked===primerTrobat) {{
-        setResult('ok1', 'Ja has trobat aquest!', 'busca el SEGON símbol comú diferent');
+        setResult('ok1', 'Ja has trobat aquest!',
+          'busca el SEGON símbol comú diferent · o prem "passa (+1 pt)"');
+        selEsq=null;
         return;
       }}
-      selEsq=clicked;
-      c1el.classList.add('active');
-      setResult('ok1', `Símbol seleccionat: #${{clicked}}`,
-        'ara fes clic al MATEIX símbol a la carta dreta');
-    }} else if (cardIdx===i2 && selEsq!==null) {{
-      c1el.classList.remove('active');
-      const segon=c.find(x=>x!==primerTrobat);
-      if (c.includes(clicked) && clicked===selEsq && clicked!==primerTrobat) {{
-        // Segon encert → +1 pt addicional, tanca la ronda
-        score++; rounds++;
-        document.getElementById('s-score').textContent=score;
-        document.getElementById('s-rounds').textContent=rounds;
-        drawCard(c1el, i1, c, []);
-        drawCard(c2el, i2, c, []);
-        setResult('ok2', `✓✓ +2 pts en total! Els 2 símbols trobats!`,
-          `Comuns: #${{c.join(' i #')}}`);
-        document.getElementById('btn-passa').style.display='none';
-        selEsq=null; primerTrobat=null;
-        setTimeout(novaRonda, 1800);
-      }} else {{
-        setResult('ok1', `✗ No és aquest · segueix buscant`,
-          `tens 1 pt assegurat · prem "passa (+1 pt)" si vols continuar`);
-        selEsq=null;
-      }}
+      score++; rounds++;
+      document.getElementById('s-score').textContent=score;
+      document.getElementById('s-rounds').textContent=rounds;
+      drawCard(c1el, i1, c, []);
+      drawCard(c2el, i2, c, []);
+      setResult('ok2', `✓✓ +2 pts en total! Els 2 símbols trobats!`,
+        `Comuns: #${{c.join(' i #')}}`);
+      showBtn('btn-passa', false); showBtn('btn-skip', false);
+      selEsq=null; estat='idle';
+      setTimeout(novaRonda, 1800);
     }}
   }}
 }}
 
 function iniciar() {{
   score=0; rounds=0; secsLeft=TOTAL_SECS; running=true;
-  selEsq=null; primerTrobat=null;
+  estat='idle'; selEsq=null; primerTrobat=null;
   document.getElementById('s-score').textContent='0';
   document.getElementById('s-rounds').textContent='0';
   document.getElementById('s-time').textContent='2:00';
   document.getElementById('timer-bar').style.width='100%';
   document.getElementById('timer-bar').style.background='#1D9E75';
   document.getElementById('overlay').style.display='none';
-  document.getElementById('btn-start').style.display='none';
+  showBtn('btn-start', false);
   if (timerInterval) clearInterval(timerInterval);
   timerInterval=setInterval(updateTimer, 1000);
   novaRonda();
 }}
 function reiniciar() {{ iniciar(); }}
 
-document.getElementById('c1').addEventListener('click', e=>handleClick(document.getElementById('c1'),i1,e));
-document.getElementById('c2').addEventListener('click', e=>handleClick(document.getElementById('c2'),i2,e));
+document.getElementById('c1').addEventListener('click',
+  e=>handleClick(document.getElementById('c1'),i1,e));
+document.getElementById('c2').addEventListener('click',
+  e=>handleClick(document.getElementById('c2'),i2,e));
 
 let n=0;
 imgs.forEach(im=>{{
