@@ -62,7 +62,7 @@ body { background:var(--bg); color:var(--txt); font-family:sans-serif;
   min-height:100vh; display:flex; flex-direction:column; align-items:center; }
 header { width:100%; max-width:900px; padding:1.5rem 1.5rem 0.5rem; }
 h1 { font-size:1.4rem; color:var(--acc); }
-.sub { font-size:0.75rem; color:var(--mut); margin-top:4px; }
+.sub { font-size:0.4rem; color:var(--mut); margin-top:4px; }
 .stats { display:flex; gap:10px; padding:0.75rem 1.5rem; width:100%; max-width:900px; flex-wrap:wrap; }
 .stat { background:var(--sur); border:1px solid var(--bor); border-radius:8px;
   padding:8px 16px; font-size:0.78rem; color:var(--mut); }
@@ -119,7 +119,6 @@ button.hid { display:none !important; }
     <ul>
       <li>Tens <b>2 minuts</b> per trobar el màxim de símbols</li>
       <li>En cada parell de cartes hi ha <b>exactament 2 símbols en comú</b></li>
-      <li>Clica un símbol a la carta esquerra, després el <b>mateix</b> a la dreta</li>
       <li>Pots trobar <b>1 símbol (+1 pt)</b> i prémer Passa</li>
       <li>O trobar els <b>2 símbols (+2 pts)</b> per màxima puntuació</li>
       <li>Si no veus res, prem <b>Salta (0 pts)</b></li>
