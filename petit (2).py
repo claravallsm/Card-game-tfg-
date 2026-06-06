@@ -29,7 +29,7 @@ arxius_arreu = sorted([f for f in os.listdir(ruta_arreu) if f.startswith("arreu"
 seleccio_arreu = random.sample(arxius_arreu, 37 - 3 * len(carpetes))
 noms_fitxers += [os.path.join(ruta_arreu, f) for f in seleccio_arreu]
 
-def foto_a_base64(path, mida=(200, 200)):
+def foto_a_base64(path, mida=(300, 300)):
     img = Image.open(path).convert("RGB").resize(mida, Image.LANCZOS)
     buf = io.BytesIO()
     img.save(buf, format="JPEG", quality=85)
