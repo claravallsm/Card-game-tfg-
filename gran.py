@@ -258,7 +258,7 @@ function comuns(a, b) {
   return blocs(b).filter(function(x) { return s.has(x); });
 }
 function posicions(R) {
-  var p = [[R,R]], an = R * 0.5;
+  var p = [[R,R]], an = R * 0.6;
   for (var i = 0; i < 10; i++) {
     var a = i / 10 * Math.PI * 2 - Math.PI / 2;
     p.push([R + Math.cos(a) * an, R + Math.sin(a) * an]);
