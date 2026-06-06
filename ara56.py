@@ -88,7 +88,7 @@ page = '''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Dobble Gran Contrarellotge</title>
+<title>Find the two (difficult version) </title>
 <style>
 :root {
   --bg:#0e0e0f; --sur:#1a1a1c; --sur2:#242426;
