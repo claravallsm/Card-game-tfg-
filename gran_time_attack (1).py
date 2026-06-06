@@ -223,9 +223,7 @@ function posicions(R) {
   return p;
 }
 
-// hl  = simbols encertats (verd)
-// dm  = simbols apagats
-// sel = simbol seleccionat a l'esquerra (taronja), -1 = cap
+
 function draw(cv, idx, hl, dm, sel) {
   hl  = hl  || [];
   dm  = dm  || [];
@@ -413,7 +411,7 @@ function clic(cv, esq, e) {
     }
     G.selEsq = cl;
     if (G.estat === 'idle') G.estat = 'espera';
-    // Ressalta NOMES el simbol clicat en taronja, sense borde de carta
+
     if (G.estat === 'un') {
       draw(c1, G.i1, [G.prim], [], cl);
     } else {
@@ -425,13 +423,13 @@ function clic(cv, esq, e) {
     return;
   }
 
-  // Carta dreta
+ 
   if (G.selEsq === null) return;
   if (c.indexOf(cl) < 0 || cl !== G.selEsq) {
     setRes('err', 'Incorrecte',
       G.estat === 'un' ? 'torna a intentar o prem Passa' : 'no coincideixen, torna-ho a intentar');
     soError();
-    // Treu el ressaltat taronja
+
     if (G.estat === 'un') draw(c1, G.i1, [G.prim], []);
     else draw(c1, G.i1);
     G.selEsq = null; return;
