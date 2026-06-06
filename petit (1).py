@@ -294,10 +294,14 @@ function tick() {
   var b = document.getElementById('tbar');
   b.style.width = p + '%';
   b.style.background = p > 50 ? '#1D9E75' : p > 20 ? '#EF9F27' : '#E24B4A';
-}
-function fi() {
+}function fi() {
+  if (G.score > G.best) {
+    G.best = G.score;
+    localStorage.setItem('best56', G.score);
+  }
   document.getElementById('ov-sub').innerHTML =
-    'Has aconseguit <b style="color:#f0efe8">' + G.score + ' punts</b> en ' + G.rounds + ' rondes';
+    'Has aconseguit <b style="color:#f0efe8">' + G.score + ' punts</b> en ' + G.rounds + ' rondes' +
+    '<br>Record personal: <b style="color:#EF9F27">' + G.best + ' pts</b>';
   document.getElementById('overlay').style.display = 'flex';
   hid('b-pas', true); hid('b-sal', true);
 }
