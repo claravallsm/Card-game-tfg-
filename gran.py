@@ -266,9 +266,7 @@ function posicions(R) {
   return p;
 }
 
-// hl  = simbols encertats (verd)
-// dm  = simbols apagats
-// sel = simbol seleccionat a l esquerra (taronja, -1 = cap)
+
 function draw(cv, idx, hl, dm, sel) {
   hl  = hl  || [];
   dm  = dm  || [];
@@ -288,26 +286,22 @@ function draw(cv, idx, hl, dm, sel) {
       var d = dm.indexOf(s) >= 0;
       var isSel = (s === sel);
       ctx.globalAlpha = d ? 0.12 : 1;
-      // Halo taronja si seleccionat
       if (isSel) {
         ctx.beginPath(); ctx.arc(x,y,r+5,0,Math.PI*2);
         ctx.fillStyle = 'rgba(239,159,39,0.25)'; ctx.fill();
         ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 2; ctx.stroke();
       }
-      // Halo verd si encertat
       if (h) {
         ctx.beginPath(); ctx.arc(x,y,r+5,0,Math.PI*2);
         ctx.fillStyle = 'rgba(29,158,117,0.18)'; ctx.fill();
         ctx.strokeStyle = '#1D9E75'; ctx.lineWidth = 2; ctx.stroke();
       }
-      // Imatge
       var im = imgs[s];
       ctx.save();
       ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.clip();
       if (im.complete && im.naturalWidth) ctx.drawImage(im, x-r, y-r, r*2, r*2);
       else { ctx.fillStyle = '#333'; ctx.fill(); }
       ctx.restore();
-      // Borde interior
       if (isSel) {
         ctx.strokeStyle = '#EF9F27'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.stroke();
@@ -467,7 +461,6 @@ function clic(cv, esq, e) {
     }
     G.selEsq = cl;
     if (G.estat === 'idle') G.estat = 'espera';
-    // Ressalta NOMES el simbol clicat en taronja
     if (G.estat === 'un') {
       draw(c1, G.i1, [G.prim], [], cl);
     } else {
@@ -478,13 +471,11 @@ function clic(cv, esq, e) {
     return;
   }
 
-  // Carta dreta
   if (G.selEsq === null) return;
   if (c.indexOf(cl) < 0 || cl !== G.selEsq) {
     setRes('err', 'Incorrecte',
       G.estat === 'un' ? 'torna a intentar o prem Passa' : 'no coincideixen, torna-ho a intentar');
     soError();
-    // Treu el ressaltat taronja
     if (G.estat === 'un') draw(c1, G.i1, [G.prim], []);
     else draw(c1, G.i1);
     G.selEsq = null;
