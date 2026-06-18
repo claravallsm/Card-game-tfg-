@@ -25,7 +25,8 @@ for k_prima in range(2, 55):
     numerador__1 = 2*k_prima + (lambda_prima - mu)*(k_prima + l) + (-1) * math.isqrt(d) * (k_prima + l)
     denominador__1 = (-1) * 2 * math.isqrt(d)
 
-    if (denominador_1 != 0 and numerador_1 % denominador_1 == 0) and \
+    if (denominador_1 != 0 and numerador_1 %
+         denominador_1 == 0) and \
        (denominador__1 != 0 and numerador__1 % denominador__1 == 0):
         resultats_valids.append((k_prima, l, mu, lambda_prima, d))
 
