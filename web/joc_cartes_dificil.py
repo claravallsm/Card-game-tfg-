@@ -489,7 +489,7 @@ function comuns(a, b) {
 }
 function posicions(R) {
     var p = [[R,R]], an = R * 0.58;
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < 10; i++) {
         var a = i / 8 * Math.PI * 2 - Math.PI / 2;
         p.push([R + Math.cos(a) * an, R + Math.sin(a) * an]);
     }
