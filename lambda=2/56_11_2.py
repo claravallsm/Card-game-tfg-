@@ -45,7 +45,7 @@ matrix = generate_bibd_56_11_2()
 print("Obtenim la següent matriu d'incidència")
 for i in range(56):
     print(matrix[i])
-
+'''
 resultat = np.dot(matrix, matrix.T)
 print("Comprovem el teorema ")
 for i in range(56):
@@ -54,7 +54,7 @@ for i in range(56):
 v_vector = np.ones(56, dtype=int)
 resultat_k = np.dot(v_vector, matrix)
 print(resultat_k)
-
+'''
 
 
 
