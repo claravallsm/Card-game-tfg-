@@ -7,7 +7,7 @@ def es_quadrat_perfecte(n):
     return r * r == n
 
 resultats_valids = []
-
+i=0
 for k_prima in range(2, 55):
     l = 55 - k_prima
     for lambda_prima in range(0, k_prima):        
@@ -32,7 +32,8 @@ for k_prima in range(2, 55):
         den = -2 * sqrt_d
 
         if num_mes % den == 0 and num_menys % (-den) == 0:
-            resultats_valids.append((k_prima, l, mu, lambda_prima, d))
-
-for k_prima, l, mu, lambda_prima, d in resultats_valids:
-    print(f"k'={k_prima} l={l} mu={mu} lambda'={lambda_prima} d={d}")
+            i=i+1
+            resultats_valids.append((i,k_prima, l, mu, lambda_prima, d))
+           
+for i,k_prima, l, mu, lambda_prima, d in resultats_valids:
+    print(f"i={i} k'={k_prima} l={l} mu={mu} lambda'={lambda_prima} d={d}")
