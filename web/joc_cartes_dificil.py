@@ -2,21 +2,50 @@ import numpy as np
 from PIL import Image
 import os, random, base64, json, io
 
-def generate_bibd_37_9_2():
-    v = 37
-    base_block = [1, 7, 9, 10, 12, 16, 26, 33, 34]
-    matrix = np.zeros((v, v), dtype=int)
-    for i in range(v):
-        for punt in base_block:
-            punt_mogut = (punt + i) % v
-            matrix[i][punt_mogut] = 1
+import numpy as np
+def generate_bibd_56_11_2(): 
+    a = { 1:2, 2:3, 3:4, 4:5, 5:6, 6:7, 7:1, 8:9, 9:10, 10:11, 11:12, 12:13, 13:14, 14:8,
+        15:16, 16:17, 17:18, 18:19, 19:20, 20:21, 21:15, 22:23, 23:24, 24:25, 25:26, 26:27, 27:28, 28:22,
+        29:30, 30:31, 31:32, 32:33, 33:34, 34:35, 35:29, 36:37, 37:38, 38:39, 39:40, 40:41, 41:42, 42:36,
+        43:44, 44:45, 45:46, 46:47, 47:48, 48:49, 49:43, 50:51, 51:52, 52:53, 53:54, 54:55, 55:56, 56:50}
+    
+    b = {1:1, 45:45, 2:3, 3:7, 7:2, 4:5, 5:6, 6:4, 8:27, 27:42, 42:8, 9:10, 10:26, 26:9,
+        11:38, 38:25, 25:11, 12:19, 19:37, 37:12, 13:21, 21:18, 18:13, 14:36, 36:20, 20:14,
+        15:34, 34:17, 17:15, 16:35, 35:33, 33:16, 22:31, 31:53, 53:22, 23:51, 51:30, 30:23,
+        24:39, 39:50, 50:24, 28:54, 54:41, 41:28, 29:52, 52:32, 32:29, 40:55, 55:56, 56:40,
+        43:44, 44:46, 46:43, 47:48, 48:49, 49:47}
+    c = {1:1, 45:45, 2:8, 8:41, 41:2, 3:27, 27:28, 28:3, 4:36, 36:31, 31:4, 5:20, 20:53, 53:5,
+        6:14, 14:22, 22:6, 7:42, 42:54, 54:7, 9:29, 29:34, 34:9, 10:52, 52:17, 17:10,
+        11:24, 24:46, 46:11, 12:30, 30:48, 48:12, 13:55, 55:33, 33:13, 15:26, 26:32, 32:15,
+        16:21, 21:56, 56:16, 18:40, 40:35, 35:18, 19:23, 23:49, 49:19, 25:50, 50:44, 44:25,
+        37:51, 51:47, 47:37, 38:39, 39:43, 43:38}
+    
+    d = {1:1, 8:8, 11:11, 14:14, 23:23, 25:25, 38:38, 48:48, 2:34, 34:2, 3:54, 54:3, 4:39, 39:4, 
+        5:13, 13:5, 6:29, 29:6, 7:56, 56:7, 9:44, 44:9, 10:16, 16:10, 12:19, 19:12, 15:41, 41:15, 17:55, 55:17, 18:52, 52:18,
+        20:42, 42:20, 21:24, 24:21, 22:26, 26:22, 27:36, 36:27, 28:40, 40:28, 30:47, 47:30,
+        31:33, 33:31, 32:50, 50:32, 35:43, 43:35, 37:45, 45:37, 46:53, 53:46, 49:51, 51:49}
+    
+    base_block = frozenset([1, 12, 19, 23, 30, 37, 45, 47, 48, 49, 51])
+
+    all_blocks = [base_block]
+    for block in all_blocks:
+        for perm in [a, b, c, d]:
+            new_block = frozenset(perm[point] for point in block)
+            if new_block not in all_blocks:
+                all_blocks.append(new_block)
+                if len(all_blocks) == 56:
+                    break
+        if len(all_blocks) == 56:
+            break
+            
+    matrix = np.zeros((56, 56), dtype=int)
+    for row_idx, block in enumerate(all_blocks):
+        for point in block:
+            matrix[row_idx][point - 1] = 1
+            
     return matrix
 
-matrix = generate_bibd_37_9_2()
-
-# Directoris del sistema de fitxers
-
-  # Directoris del sistema de fitxers
+matrix = generate_bibd_56_11_2()
 directori_script = os.path.dirname(os.path.abspath(__file__))
 
 # Pugem un nivell per sortir de la carpeta 'web' i anar a la carpeta arrel del TFG
@@ -30,7 +59,7 @@ for carpeta in carpetes_tematiques:
     ruta = os.path.join(directori_arrel, carpeta)
     if os.path.exists(ruta):
         arxius = sorted([f for f in os.listdir(ruta) if f.endswith(".jpg")])
-        seleccio = random.sample(arxius, min(3, len(arxius)))
+        seleccio = random.sample(arxius, len(arxius))
         noms_fitxers += [os.path.join(ruta, f) for f in seleccio]
     else:
         print(f"Alerta: No s'ha trobat la carpeta temàtica: {ruta}")
@@ -40,14 +69,12 @@ ruta_generiques = os.path.join(directori_arrel, "fotos_generiques")
 
 if os.path.exists(ruta_generiques):
     arxius_generics = sorted([f for f in os.listdir(ruta_generiques) if f.endswith(".jpg")])
-    quants_falten = 37 - len(noms_fitxers)
+    quants_falten = 56 - len(noms_fitxers)
     
     if len(arxius_generics) >= quants_falten:
-        # Triem aleatòriament les que falten per arribar a 37
         seleccio_generica = random.sample(arxius_generics, quants_falten)
     else:
         seleccio_generica = arxius_generics
-        print(f"Alerta: Faltaran imatges per arribar a les 37 necessàries (només hi ha {len(arxius_generics)} a fotos_generiques).")
         
     noms_fitxers += [os.path.join(ruta_generiques, f) for f in seleccio_generica]
 else:
@@ -64,7 +91,7 @@ print(f"Convertint {len(noms_fitxers)} fotos...")
 fotos_b64 = []
 for i, path in enumerate(noms_fitxers):
     fotos_b64.append(foto_a_base64(path))
-    print(f"  {i+1}/37: {os.path.basename(path)}")
+    print(f"  {i+1}/56: {os.path.basename(path)}")
 
 matrix_json = json.dumps(matrix.tolist())
 fotos_json  = json.dumps(fotos_b64)
@@ -376,7 +403,7 @@ page = '''<!DOCTYPE html>
 <div id="pantalla-ini">
     <div class="ini-box">
         <h2>Com es juga</h2>
-        <p class="ini-sub">BIBD(37, 9, 2) &middot; 2 minuts</p>
+        <p class="ini-sub">BIBD(56, 11, 2) &middot; 2 minuts</p>
         <ul>
             <li>Tens <b>2 minuts</b> per trobar el màxim de símbols possibles.</li>
             <li>En cada parell de cartes hi ha <b>exactament 2 símbols en comú</b>.</li>
@@ -391,7 +418,7 @@ page = '''<!DOCTYPE html>
 
 <header>
     <h1>Find the two</h1>
-    <div class="sub">BIBD(37,9,2) &middot; 2 minuts</div>
+    <div class="sub">BIBD(56,11,2) &middot; 2 minuts</div>
 </header>
 
 <div class="stats">
@@ -434,7 +461,7 @@ page = '''<!DOCTYPE html>
 var MATRIX = __MATRIX__;
 var FOTOS  = __FOTOS__;
 var TSECS  = 120;
-var NC     = 37;
+var NC     = 55;
 
 var G = {
     i1:0, i2:1,
@@ -445,7 +472,7 @@ var G = {
     secs:120,
     timer:null,
     run:false,
-    best: parseInt(localStorage.getItem('best37') || '0')
+    best: parseInt(localStorage.getItem('best56') || '0')
 };
 
 var imgs = FOTOS.map(function(s) {
@@ -559,7 +586,7 @@ function tick() {
 function fi() {
     if (G.score > G.best) {
         G.best = G.score;
-        localStorage.setItem('best37', G.score);
+        localStorage.setItem('best56', G.score);
     }
     document.getElementById('ov-sub').innerHTML =
         'Has aconseguit <b style="color:#f0efe8">' + G.score + ' punts</b> en ' + G.rounds + ' rondes' +
@@ -718,10 +745,10 @@ imgs.forEach(function(im) {
 
 page = page.replace('__MATRIX__', matrix_json).replace('__FOTOS__', fotos_json)
 
-output_path = os.path.join(directori_script, "joc_cartes_facil.html")
+output_path = os.path.join(directori_script, "joc_cartes_dificil.html")
 with open(output_path, "w", encoding="utf-8") as f:
     f.write(page)
 
 size_mb = os.path.getsize(output_path) / 1024 / 1024
-print(f"\nFet! joc_cartes_facil.html generat ({size_mb:.1f} MB)")
+print(f"\nFet! joc_cartes_dificil.html generat ({size_mb:.1f} MB)")
 print(f"Ubicacio: {output_path}")
