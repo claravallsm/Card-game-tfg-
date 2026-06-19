@@ -488,16 +488,19 @@ function comuns(a, b) {
     return blocs(b).filter(function(x) { return s.has(x); });
 }
 function posicions(R) {
-    var p = [[R, R]];                  // 1 al centre
-    var ri = R * 0.44, ro = R * 0.76;  // radis anell intern / extern
-    for (var i = 0; i < 5; i++) {      // 5 a l'anell intern
-        var a = i / 5 * Math.PI * 2 - Math.PI / 2;
-        p.push([R + Math.cos(a) * ri, R + Math.sin(a) * ri]);
-    }
-    for (var j = 0; j < 5; j++) {      // 5 a l'anell extern, desfasats mig pas
-        var b = j / 5 * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
-        p.push([R + Math.cos(b) * ro, R + Math.sin(b) * ro]);
-    }
+    var p = [];
+    var dx = R * 0.46;                                  // separació horitzontal de les files de 3
+    var ys = [R - R*0.60, R - R*0.20, R + R*0.20, R + R*0.60]; // 4 nivells verticals
+
+    // Fila 1 (3)
+    p.push([R - dx, ys[0]], [R, ys[0]], [R + dx, ys[0]]);
+    // Fila 2 (3)
+    p.push([R - dx, ys[1]], [R, ys[1]], [R + dx, ys[1]]);
+    // Fila 3 (3)
+    p.push([R - dx, ys[2]], [R, ys[2]], [R + dx, ys[2]]);
+    // Fila 4 (2, centrada)
+    p.push([R - dx*0.5, ys[3]], [R + dx*0.5, ys[3]]);
+
     return p;
 }
 
