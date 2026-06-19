@@ -488,10 +488,15 @@ function comuns(a, b) {
     return blocs(b).filter(function(x) { return s.has(x); });
 }
 function posicions(R) {
-    var p = [[R,R]], an = R * 0.58;
-    for (var i = 0; i < 10; i++) {
-        var a = i / 8 * Math.PI * 2 - Math.PI / 2;
-        p.push([R + Math.cos(a) * an, R + Math.sin(a) * an]);
+    var p = [[R, R]];                  // 1 al centre
+    var ri = R * 0.44, ro = R * 0.76;  // radis anell intern / extern
+    for (var i = 0; i < 5; i++) {      // 5 a l'anell intern
+        var a = i / 5 * Math.PI * 2 - Math.PI / 2;
+        p.push([R + Math.cos(a) * ri, R + Math.sin(a) * ri]);
+    }
+    for (var j = 0; j < 5; j++) {      // 5 a l'anell extern, desfasats mig pas
+        var b = j / 5 * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+        p.push([R + Math.cos(b) * ro, R + Math.sin(b) * ro]);
     }
     return p;
 }
