@@ -101,7 +101,7 @@ page = '''<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Find the Two - BIBD Game</title>
+    <title>Find the Two (Difficult Version) - BIBD Game</title>
     <style>
         :root {
             --bg: #0e0e0f; 
