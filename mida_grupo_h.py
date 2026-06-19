@@ -1,7 +1,7 @@
 from sympy.combinatorics import Permutation
 from sympy.combinatorics.perm_groups import PermutationGroup
 
-b=c = Permutation([ [2, 4, 3]])
+b= Permutation([ [2, 4, 3]])
 c = Permutation([[1, 6, 5], [2, 4, 3]])
 d = Permutation([[2, 3], [4, 6]])
 G = PermutationGroup(b,c, d)
